@@ -20,7 +20,6 @@
     <div id="view-login" class="w-full h-full flex items-center justify-center bg-slate-100 absolute z-50 fade-in">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-8">
-                <!-- LOGO TUREN INDAH GROUP -->
                 <img src="https://lh3.googleusercontent.com/d/1WVC-Cv2ak0-ZbUn7ac6JQap25scNcCny" alt="Logo TI" class="h-16 mx-auto mb-3">
                 <h1 class="text-2xl font-bold text-slate-800">TI Connect.</h1>
                 <p class="text-sm text-slate-500">Sistem Informasi Karyawan</p>
@@ -49,7 +48,6 @@
         <!-- SIDEBAR -->
         <aside class="bg-sidebar w-64 h-full flex flex-col text-slate-300 shadow-xl z-20 hidden md:flex shrink-0">
             <div class="p-6 pb-4 border-b border-slate-700/50 flex items-center gap-3">
-                <!-- LOGO TUREN INDAH GROUP -->
                 <img src="https://lh3.googleusercontent.com/d/1WVC-Cv2ak0-ZbUn7ac6JQap25scNcCny" alt="Logo" class="h-8">
                 <h1 class="text-xl font-bold text-white">TI Connect.</h1>
             </div>
@@ -70,10 +68,14 @@
             <div class="p-4 border-t border-slate-700/50 flex items-center gap-3 justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold"><i class="fa-regular fa-user"></i></div>
+                    
+                    <!-- PERBAIKAN: Pemisahan Unit Bisnis & Jabatan -->
                     <div class="overflow-hidden">
-                        <p id="lbl-nama" class="text-sm font-bold text-white truncate w-32">Nama</p>
-                        <p id="lbl-jabatan" class="text-xs text-slate-400 truncate w-32">Jabatan</p>
+                        <p id="lbl-nama" class="text-sm font-bold text-white truncate w-32 pb-0.5 uppercase">Nama</p>
+                        <p id="lbl-unit" class="text-[10px] font-bold text-blue-400 truncate w-32 leading-tight">Unit Bisnis</p>
+                        <p id="lbl-jabatan" class="text-[10px] text-slate-400 truncate w-32 leading-tight">Jabatan</p>
                     </div>
+
                 </div>
                 <button onclick="logout()" title="Keluar" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-power-off"></i></button>
             </div>
@@ -161,7 +163,6 @@
                 <!-- C. KONTEN: PENGAJUAN LIBUR -->
                 <div id="konten-Libur" class="hidden fade-in">
                     <div class="flex flex-col md:flex-row gap-6">
-                        <!-- Kolom Kiri: Form -->
                         <div class="w-full md:w-5/12 bg-white rounded-xl shadow-sm border border-slate-100 p-6 self-start">
                             <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-pen-to-square mr-2"></i>Formulir Pengajuan</h3>
                             <form id="form-libur" onsubmit="submitLibur(event)">
@@ -194,7 +195,6 @@
                             </form>
                         </div>
                         
-                        <!-- Kolom Kanan: Riwayat -->
                         <div class="w-full md:w-7/12 bg-white rounded-xl shadow-sm border border-slate-100 p-6 self-start">
                             <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Status & Riwayat Libur Anda</h3>
                             <div id="container-riwayat-libur" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
@@ -230,13 +230,10 @@
         </main>
     </div>
 
-    <!-- ========================================== -->
-    <!-- LOGIKA JAVASCRIPT APLIKASI -->
-    <!-- ========================================== -->
     <script>
         // =========================================================================
         // WAJIB GANTI: Masukkan URL Web App Google Apps Script Anda di bawah ini!
-        const API_URL = "https://script.google.com/macros/s/AKfycbwYi5o2DaH-7yi8pNN2Z8T1F7plBVtY4ckx6uTRObQo-OjNdjnXbdiVml0V0a1mEXuW/exec"; 
+        const API_URL = "MASUKKAN_URL_APPS_SCRIPT_ANDA_DISINI"; 
         // =========================================================================
 
         let globalDaftarTM = [];
@@ -278,12 +275,21 @@
 
             globalDaftarTM = data.listTanggalMerah || [];
             
-            document.getElementById('lbl-nama').innerText = data.nama; document.getElementById('lbl-jabatan').innerText = data.jabatan;
+            document.getElementById('lbl-nama').innerText = data.nama; 
+            
+            // PERBAIKAN JS: Split Jabatan dan Unit Bisnis untuk Sidebar
+            let jabatanFull = data.jabatan || "";
+            if(jabatanFull.includes(" | ")) {
+                let split = jabatanFull.split(" | ");
+                document.getElementById('lbl-unit').innerText = split[0];
+                document.getElementById('lbl-jabatan').innerText = split[1];
+            } else {
+                document.getElementById('lbl-unit').innerText = "";
+                document.getElementById('lbl-jabatan').innerText = jabatanFull;
+            }
+            
             document.getElementById('lbl-sisa-cuti').innerText = data.sisaCuti; document.getElementById('lbl-sisa-tm').innerText = data.sisaTM;
-            
-            // Profil Tambahan
             document.getElementById('lbl-lahir').innerText = data.tglLahir; document.getElementById('lbl-alamat').innerText = data.alamat;
-            
             document.getElementById('lbl-masuk').innerText = data.tglMasuk; document.getElementById('lbl-lama').innerText = data.lamaKerja;
             document.getElementById('lbl-kontrak').innerText = data.statusKontrak;
             let elSisaKontrak = document.getElementById('lbl-sisa-kontrak');
@@ -296,23 +302,19 @@
 
         // --- 3. NAVIGASI MENU (SPA) ---
         function bukaMenu(namaMenu) {
-            // Update Title
             let textJudul = namaMenu;
             if(namaMenu === 'Beranda') textJudul = 'Beranda Karyawan';
             if(namaMenu === 'Absensi') textJudul = 'Berita Acara Karyawan';
             if(namaMenu === 'Approval') textJudul = 'Pusat Persetujuan HRD';
             document.getElementById('judul-halaman').innerText = textJudul;
             
-            // Ubah Warna Tombol Menu Sidebar
             document.querySelectorAll('.menu-btn').forEach(btn => { btn.className = "w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors menu-btn"; });
             let activeBtn = document.getElementById('btn-menu-' + namaMenu);
             if(activeBtn) activeBtn.className = "w-full flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium shadow-md transition-colors menu-btn";
 
-            // Sembunyikan Semua Konten, Munculkan yang Dipilih
             ['Beranda', 'Absensi', 'Libur', 'Approval'].forEach(id => { document.getElementById('konten-' + id).classList.add('hidden'); });
             document.getElementById('konten-' + namaMenu).classList.remove('hidden');
 
-            // Logika Khusus tiap Halaman
             if(namaMenu === 'Absensi') inisiasiAbsensi();
             if(namaMenu === 'Libur') inisiasiLibur();
             if(namaMenu === 'Approval') tarikDataApproval();
