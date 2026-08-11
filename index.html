@@ -65,19 +65,20 @@
                     <i class="fa-solid fa-envelope-open-text w-6 text-left"></i> Pusat Persetujuan
                 </button>
             </div>
-            <div class="p-4 border-t border-slate-700/50 flex items-center gap-3 justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold"><i class="fa-regular fa-user"></i></div>
+            
+            <div class="p-4 border-t border-slate-700/50 flex items-start gap-3 justify-between">
+                <div class="flex items-start gap-3 w-full">
+                    <div class="w-10 h-10 mt-1 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold shrink-0"><i class="fa-regular fa-user"></i></div>
                     
-                    <!-- PERBAIKAN: Pemisahan Unit Bisnis & Jabatan -->
-                    <div class="overflow-hidden">
-                        <p id="lbl-nama" class="text-sm font-bold text-white truncate w-32 pb-0.5 uppercase">Nama</p>
-                        <p id="lbl-unit" class="text-[10px] font-bold text-blue-400 truncate w-32 leading-tight">Unit Bisnis</p>
-                        <p id="lbl-jabatan" class="text-[10px] text-slate-400 truncate w-32 leading-tight">Jabatan</p>
+                    <!-- PERBAIKAN: Unit & Jabatan Ditumpuk dan Tidak Terpotong -->
+                    <div class="overflow-hidden w-full">
+                        <p id="lbl-nama" class="text-sm font-bold text-white pb-0.5 uppercase tracking-wide">Nama</p>
+                        <p id="lbl-unit" class="text-[11px] font-bold text-blue-400 whitespace-normal leading-tight w-full">Unit Bisnis</p>
+                        <p id="lbl-jabatan" class="text-[10px] text-slate-400 whitespace-normal leading-tight w-full mt-0.5">Jabatan</p>
                     </div>
 
                 </div>
-                <button onclick="logout()" title="Keluar" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-power-off"></i></button>
+                <button onclick="logout()" title="Keluar" class="text-red-400 hover:text-red-300 mt-2 shrink-0"><i class="fa-solid fa-power-off text-lg"></i></button>
             </div>
         </aside>
 
@@ -277,26 +278,25 @@
             
             document.getElementById('lbl-nama').innerText = data.nama; 
             
-            // PERBAIKAN JS: Split Jabatan dan Unit Bisnis untuk Sidebar
-            let jabatanFull = data.jabatan || "";
-            if(jabatanFull.includes(" | ")) {
-                let split = jabatanFull.split(" | ");
-                document.getElementById('lbl-unit').innerText = split[0];
-                document.getElementById('lbl-jabatan').innerText = split[1];
-            } else {
-                document.getElementById('lbl-unit').innerText = "";
-                document.getElementById('lbl-jabatan').innerText = jabatanFull;
-            }
+            // PERBAIKAN: Unit Bisnis & Jabatan langsung dibaca dari Backend API
+            document.getElementById('lbl-unit').innerText = data.unitBisnis || "-";
+            document.getElementById('lbl-jabatan').innerText = data.jabatan || "-";
             
             document.getElementById('lbl-sisa-cuti').innerText = data.sisaCuti; document.getElementById('lbl-sisa-tm').innerText = data.sisaTM;
             document.getElementById('lbl-lahir').innerText = data.tglLahir; document.getElementById('lbl-alamat').innerText = data.alamat;
             document.getElementById('lbl-masuk').innerText = data.tglMasuk; document.getElementById('lbl-lama').innerText = data.lamaKerja;
             document.getElementById('lbl-kontrak').innerText = data.statusKontrak;
+            
             let elSisaKontrak = document.getElementById('lbl-sisa-kontrak');
             elSisaKontrak.innerText = data.sisaHariKontrak;
             if(data.sisaHariKontrak.includes("Habis")) elSisaKontrak.className = "font-bold text-red-600";
 
-            if(data.isAtasan || data.isHRD) document.getElementById('btn-menu-Approval').classList.remove('hidden');
+            if(data.isAtasan || data.isHRD) {
+                document.getElementById('btn-menu-Approval').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-menu-Approval').classList.add('hidden');
+            }
+            
             bukaMenu('Beranda');
         }
 
