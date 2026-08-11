@@ -10,24 +10,20 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .bg-sidebar { background-color: #0b1c3c; } 
         .bg-main { background-color: #f1f5f9; }
-        /* Animasi Transisi Halus */
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-main h-screen flex overflow-hidden text-slate-800">
 
-    <!-- ========================================== -->
     <!-- 1. HALAMAN LOGIN -->
-    <!-- ========================================== -->
     <div id="view-login" class="w-full h-full flex items-center justify-center bg-slate-100 absolute z-50 fade-in">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 mb-4">
-                    <i class="fa-solid fa-crown text-3xl text-yellow-500"></i>
-                </div>
+                <!-- LOGO TUREN INDAH GROUP -->
+                <img src="https://lh3.googleusercontent.com/d/1WVC-Cv2ak0-ZbUn7ac6JQap25scNcCny" alt="Logo TI" class="h-16 mx-auto mb-3">
                 <h1 class="text-2xl font-bold text-slate-800">TI Connect.</h1>
-                <p class="text-sm text-slate-500">Sistem Informasi Karyawan Turen Indah</p>
+                <p class="text-sm text-slate-500">Sistem Informasi Karyawan</p>
             </div>
             
             <form id="form-login" onsubmit="prosesLogin(event)">
@@ -47,45 +43,44 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 2. HALAMAN DASHBOARD UTAMA (DISembunyikan dlu) -->
-    <!-- ========================================== -->
+    <!-- 2. HALAMAN DASHBOARD -->
     <div id="view-dashboard" class="w-full h-full flex hidden fade-in">
         
         <!-- SIDEBAR -->
-        <aside class="bg-sidebar w-64 h-full flex flex-col text-slate-300 shadow-xl z-20 hidden md:flex">
-            <div class="p-6 pb-4 border-b border-slate-700/50">
-                <h1 class="text-2xl font-bold text-white mb-1"><i class="fa-solid fa-crown text-yellow-500 mr-2"></i>TI Connect.</h1>
+        <aside class="bg-sidebar w-64 h-full flex flex-col text-slate-300 shadow-xl z-20 hidden md:flex shrink-0">
+            <div class="p-6 pb-4 border-b border-slate-700/50 flex items-center gap-3">
+                <!-- LOGO TUREN INDAH GROUP -->
+                <img src="https://lh3.googleusercontent.com/d/1WVC-Cv2ak0-ZbUn7ac6JQap25scNcCny" alt="Logo" class="h-8">
+                <h1 class="text-xl font-bold text-white">TI Connect.</h1>
             </div>
             <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1" id="menu-container">
-                <button onclick="bukaMenu('Beranda')" class="w-full flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium shadow-md">
+                <button id="btn-menu-Beranda" onclick="bukaMenu('Beranda')" class="w-full flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium shadow-md transition-colors menu-btn">
                     <i class="fa-solid fa-house w-6 text-left"></i> Beranda
                 </button>
-                <button onclick="bukaMenu('Absensi')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
-                    <i class="fa-regular fa-clock w-6 text-left"></i> Absensi GPS
+                <button id="btn-menu-Absensi" onclick="bukaMenu('Absensi')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors menu-btn">
+                    <i class="fa-solid fa-map-location-dot w-6 text-left"></i> Berita Acara Karyawan
                 </button>
-                <button onclick="bukaMenu('Libur')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+                <button id="btn-menu-Libur" onclick="bukaMenu('Libur')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors menu-btn">
                     <i class="fa-regular fa-calendar-alt w-6 text-left"></i> Pengajuan Libur
                 </button>
-                <!-- Menu Khusus HRD & Atasan (Disembunyikan secara default) -->
-                <button id="menu-approval" onclick="bukaMenu('Approval')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 text-yellow-400 hover:text-yellow-300 rounded-lg transition-colors hidden">
+                <button id="btn-menu-Approval" onclick="bukaMenu('Approval')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 text-yellow-400 hover:text-yellow-300 rounded-lg transition-colors hidden menu-btn">
                     <i class="fa-solid fa-envelope-open-text w-6 text-left"></i> Pusat Persetujuan
                 </button>
             </div>
             <div class="p-4 border-t border-slate-700/50 flex items-center gap-3 justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold"><i class="fa-regular fa-user"></i></div>
+                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold"><i class="fa-regular fa-user"></i></div>
                     <div class="overflow-hidden">
                         <p id="lbl-nama" class="text-sm font-bold text-white truncate w-32">Nama</p>
                         <p id="lbl-jabatan" class="text-xs text-slate-400 truncate w-32">Jabatan</p>
                     </div>
                 </div>
-                <button onclick="logout()" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-power-off"></i></button>
+                <button onclick="logout()" title="Keluar" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-power-off"></i></button>
             </div>
         </aside>
 
         <!-- MAIN CONTENT -->
-        <main class="flex-1 h-full overflow-y-auto relative">
+        <main class="flex-1 h-full overflow-y-auto bg-main relative">
             <header class="bg-white px-8 py-5 shadow-sm sticky top-0 z-10 flex justify-between items-center">
                 <h2 id="judul-halaman" class="text-2xl font-bold text-slate-800">Beranda Karyawan</h2>
                 <div class="hidden md:flex items-center gap-4 text-sm font-medium">
@@ -95,9 +90,8 @@
 
             <div class="p-8 w-full max-w-5xl mx-auto">
                 
-                <!-- KONTEN: BERANDA KARYAWAN -->
-                <div id="konten-beranda" class="fade-in">
-                    <!-- Kartu Sisa Libur Pribadi -->
+                <!-- A. KONTEN: BERANDA -->
+                <div id="konten-Beranda" class="fade-in">
                     <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Informasi Sisa Libur Anda</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-md p-6 text-white relative overflow-hidden">
@@ -112,47 +106,124 @@
                         </div>
                     </div>
 
-                    <!-- Profil Karyawan -->
-                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Data Profil Karyawan</h3>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Data Profil Karyawan Lengkap</h3>
                     <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Tanggal Masuk</p><p id="lbl-masuk" class="font-bold text-slate-700">-</p></div>
-                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Lama Bekerja</p><p id="lbl-lama" class="font-bold text-blue-600">-</p></div>
-                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Status Kontrak</p><p id="lbl-kontrak" class="font-bold text-slate-700">-</p></div>
-                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Sisa Hari Kontrak</p><p id="lbl-sisa-kontrak" class="font-bold text-slate-700">-</p></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="border-b border-slate-100 pb-3"><p class="text-xs text-slate-400 mb-1">Tanggal Lahir</p><p id="lbl-lahir" class="font-bold text-slate-700">-</p></div>
+                            <div class="border-b border-slate-100 pb-3"><p class="text-xs text-slate-400 mb-1">Alamat Domisili</p><p id="lbl-alamat" class="font-bold text-slate-700">-</p></div>
+                            <div class="border-b border-slate-100 pb-3"><p class="text-xs text-slate-400 mb-1">Tanggal Masuk</p><p id="lbl-masuk" class="font-bold text-slate-700">-</p></div>
+                            <div class="border-b border-slate-100 pb-3"><p class="text-xs text-slate-400 mb-1">Lama Bekerja</p><p id="lbl-lama" class="font-bold text-blue-600">-</p></div>
+                            <div class="pb-3 md:border-b-0 border-b border-slate-100"><p class="text-xs text-slate-400 mb-1">Status Kontrak</p><p id="lbl-kontrak" class="font-bold text-slate-700">-</p></div>
+                            <div class="pb-3"><p class="text-xs text-slate-400 mb-1">Sisa Hari Kontrak</p><p id="lbl-sisa-kontrak" class="font-bold text-slate-700">-</p></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- KONTEN: PUSAT APPROVAL (Hanya HRD/Atasan) -->
-                <div id="konten-approval" class="hidden fade-in">
+                <!-- B. KONTEN: BERITA ACARA KARYAWAN (ABSENSI) -->
+                <div id="konten-Absensi" class="hidden fade-in">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 max-w-2xl mx-auto">
+                        <form id="form-absensi" onsubmit="submitAbsensi(event)">
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Tanggal</label><input type="text" id="absTgl" class="w-full px-3 py-2 rounded-lg bg-slate-100 border-0" readonly></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Jam</label><input type="text" id="absJam" class="w-full px-3 py-2 rounded-lg bg-slate-100 border-0 font-bold text-red-500" readonly></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Titik Koordinat GPS</label>
+                                <input type="text" id="absLokasi" class="w-full px-3 py-2 rounded-lg bg-slate-100 border-0 text-blue-600 font-medium" readonly>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Keperluan Absen</label>
+                                    <select id="absJenis" required class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                                        <option value="Masuk">Masuk</option><option value="Keluar">Keluar</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Status Kehadiran</label>
+                                    <select id="absStatus" required class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                                        <option value="Normal">Normal</option><option value="TM">TM</option><option value="Cuti">Cuti</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Keterangan / Laporan Pekerjaan</label>
+                                <textarea id="absKet" rows="3" required class="w-full px-3 py-2 rounded-lg border border-slate-200 placeholder-slate-400" placeholder="Ketik keterangan di sini..."></textarea>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Bukti Foto / Selfie Kamera</label>
+                                <input type="file" id="absFoto" accept="image/*" capture="user" required class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            </div>
+                            <button type="submit" id="btn-submit-absen" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors">Kirim Berita Acara</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- C. KONTEN: PENGAJUAN LIBUR -->
+                <div id="konten-Libur" class="hidden fade-in">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <!-- Kolom Kiri: Form -->
+                        <div class="w-full md:w-5/12 bg-white rounded-xl shadow-sm border border-slate-100 p-6 self-start">
+                            <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-pen-to-square mr-2"></i>Formulir Pengajuan</h3>
+                            <form id="form-libur" onsubmit="submitLibur(event)">
+                                <div class="mb-4">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Jenis Permohonan</label>
+                                    <select id="liburJenis" onchange="cekJenisLibur()" required class="w-full px-3 py-2 rounded-lg border border-slate-200 font-medium">
+                                        <option value="" selected disabled>Pilih Jenis Libur...</option>
+                                        <option value="Cuti Tahunan">Cuti Tahunan</option>
+                                        <option value="Pengganti Tanggal Merah (TM)">Pengganti Tanggal Merah (TM)</option>
+                                        <option value="Libur Tanggal Merah (Hari H)">Libur Tanggal Merah (Hari H)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4" id="wrapTglBiasa">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Libur Pada Tanggal</label>
+                                    <input type="date" id="liburTglBiasa" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                                </div>
+                                <div class="mb-4 hidden" id="wrapTglTM">
+                                    <label class="block text-xs font-bold text-blue-600 mb-1">Pilih Tanggal Merah (Hari H)</label>
+                                    <select id="liburTglTM" class="w-full px-3 py-2 rounded-lg border border-blue-300 bg-blue-50 text-blue-800"></select>
+                                </div>
+                                <div class="mb-4 hidden bg-yellow-50 border border-yellow-200 p-3 rounded-lg" id="wrapTglGantiTM">
+                                    <label class="block text-xs font-bold text-yellow-700 mb-1">Mengganti TM (Opsional)</label>
+                                    <select id="liburTglGanti" class="w-full px-3 py-2 rounded-lg border border-yellow-300"></select>
+                                </div>
+                                <div class="mb-6">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Alasan Libur</label>
+                                    <textarea id="liburAlasan" rows="3" required class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                                </div>
+                                <button type="submit" id="btn-submit-libur" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors">Ajukan Libur</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Kolom Kanan: Riwayat -->
+                        <div class="w-full md:w-7/12 bg-white rounded-xl shadow-sm border border-slate-100 p-6 self-start">
+                            <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Status & Riwayat Libur Anda</h3>
+                            <div id="container-riwayat-libur" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                                <!-- Injeksi dari JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- D. KONTEN: PUSAT APPROVAL (HRD) -->
+                <div id="konten-Approval" class="hidden fade-in">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                            <div class="flex justify-between items-start mb-4"><div class="text-slate-500 text-sm font-medium"><i class="fa-solid fa-envelope-open-text mr-2"></i>Menunggu Approval HRD</div><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">Pending</span></div>
-                            <h3 id="angka-pending" class="text-3xl font-bold text-slate-800">0</h3><p class="text-xs text-slate-400 mt-2">Persetujuan Terakhir</p>
+                            <div class="flex justify-between items-start mb-4"><div class="text-slate-500 text-sm font-medium"><i class="fa-solid fa-envelope-open-text mr-2"></i>Menunggu Approval</div><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">Pending</span></div>
+                            <h3 id="angka-pending" class="text-3xl font-bold text-slate-800">0</h3>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                         <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                            <div><h3 class="font-bold text-slate-800 text-lg">Daftar Persetujuan Unit</h3></div>
-                            <button onclick="tarikDataApproval()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"><i class="fa-solid fa-rotate-right"></i></button>
+                            <div><h3 class="font-bold text-slate-800 text-lg">Daftar Persetujuan Karyawan</h3></div>
+                            <button onclick="tarikDataApproval()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead><tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider"><th class="px-6 py-4 border-b">Karyawan</th><th class="px-6 py-4 border-b">Jenis Libur</th><th class="px-6 py-4 border-b">Tanggal Libur</th><th class="px-6 py-4 border-b text-center">Aksi</th></tr></thead>
-                                <tbody id="tabel-approval" class="text-sm divide-y divide-slate-100">
-                                    <tr><td colspan="4" class="text-center py-6 text-slate-500">Klik tombol refresh di atas...</td></tr>
-                                </tbody>
+                                <tbody id="tabel-approval" class="text-sm divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-
-                <!-- Konten Fitur Belum Siap (Absensi & Libur) -->
-                <div id="konten-coming-soon" class="hidden fade-in text-center py-20">
-                    <i class="fa-solid fa-person-digging text-6xl text-slate-300 mb-4"></i>
-                    <h2 class="text-2xl font-bold text-slate-700 mb-2">Modul Sedang Dibangun</h2>
-                    <p class="text-slate-500">Fitur ini akan segera tersedia di Vercel.</p>
                 </div>
 
             </div>
@@ -160,159 +231,236 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- LOGIKA JAVASCRIPT APLIKASI VERCEL -->
+    <!-- LOGIKA JAVASCRIPT APLIKASI -->
     <!-- ========================================== -->
     <script>
-        // WAJIB GANTI DENGAN URL APPS SCRIPT ANDA
+        // =========================================================================
+        // WAJIB GANTI: Masukkan URL Web App Google Apps Script Anda di bawah ini!
         const API_URL = "https://script.google.com/macros/s/AKfycbwYi5o2DaH-7yi8pNN2Z8T1F7plBVtY4ckx6uTRObQo-OjNdjnXbdiVml0V0a1mEXuW/exec"; 
+        // =========================================================================
 
-        // Fungsi yang pertama kali jalan saat web dibuka
+        let globalDaftarTM = [];
+
         window.onload = () => {
             const savedNIK = sessionStorage.getItem("userNIK");
             if(savedNIK) {
-                // Jika sudah ada sesi login, sembunyikan form login, tampilkan dashboard
                 document.getElementById('view-login').style.display = 'none';
                 document.getElementById('view-dashboard').classList.remove('hidden');
                 pulihkanSesi();
             }
         };
 
-        // 1. PROSES LOGIN (VERIFIKASI KE GOOGLE SHEETS)
+        // --- 1. PROSES LOGIN ---
         async function prosesLogin(e) {
             e.preventDefault();
-            const nik = document.getElementById('login-nik').value;
-            const pin = document.getElementById('login-pin').value;
-            const btn = document.getElementById('btn-login');
-            const err = document.getElementById('login-error');
-            
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...';
-            btn.disabled = true; err.classList.add('hidden');
+            const nik = document.getElementById('login-nik').value; const pin = document.getElementById('login-pin').value;
+            const btn = document.getElementById('btn-login'); const err = document.getElementById('login-error');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...'; btn.disabled = true; err.classList.add('hidden');
 
             try {
-                let response = await fetch(API_URL, {
-                    method: 'POST', body: JSON.stringify({ action: 'login', data: { nik: nik, pin: pin } })
-                });
+                let response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'login', data: { nik: nik, pin: pin } }) });
                 let result = await response.json();
-
                 if(result.status === "SUCCESS") {
-                    // Simpan data di Memori Browser (Session Storage)
                     sessionStorage.setItem("userNIK", nik);
                     sessionStorage.setItem("dataKaryawan", JSON.stringify(result));
-                    
-                    // Transisi Tampilan
                     document.getElementById('view-login').style.display = 'none';
                     document.getElementById('view-dashboard').classList.remove('hidden');
-                    pulihkanSesi(); // Render tampilan berdasarkan role
-                } else {
-                    err.innerText = result.message; err.classList.remove('hidden');
-                }
-            } catch (error) {
-                err.innerText = "Gagal terhubung ke Server. Periksa API URL."; err.classList.remove('hidden');
-            }
+                    pulihkanSesi();
+                } else { err.innerText = result.message; err.classList.remove('hidden'); }
+            } catch (error) { err.innerText = "Gagal terhubung ke Database Google Sheets."; err.classList.remove('hidden'); }
             btn.innerHTML = 'Masuk ke Sistem'; btn.disabled = false;
         }
 
-        // 2. MENGATUR TAMPILAN SESUAI ROLE (KARYAWAN vs HRD)
+        // --- 2. RENDER PROFIL & ROLE ---
         function pulihkanSesi() {
             const data = JSON.parse(sessionStorage.getItem("dataKaryawan"));
             if(!data) return logout();
 
-            // Render Profil Singkat
-            document.getElementById('lbl-nama').innerText = data.nama;
-            document.getElementById('lbl-jabatan').innerText = data.jabatan;
+            globalDaftarTM = data.listTanggalMerah || [];
             
-            // Render Dashboard Pribadi
-            document.getElementById('lbl-sisa-cuti').innerText = data.sisaCuti;
-            document.getElementById('lbl-sisa-tm').innerText = data.sisaTM;
-            document.getElementById('lbl-masuk').innerText = data.tglMasuk;
-            document.getElementById('lbl-lama').innerText = data.lamaKerja;
+            document.getElementById('lbl-nama').innerText = data.nama; document.getElementById('lbl-jabatan').innerText = data.jabatan;
+            document.getElementById('lbl-sisa-cuti').innerText = data.sisaCuti; document.getElementById('lbl-sisa-tm').innerText = data.sisaTM;
+            
+            // Profil Tambahan
+            document.getElementById('lbl-lahir').innerText = data.tglLahir; document.getElementById('lbl-alamat').innerText = data.alamat;
+            
+            document.getElementById('lbl-masuk').innerText = data.tglMasuk; document.getElementById('lbl-lama').innerText = data.lamaKerja;
             document.getElementById('lbl-kontrak').innerText = data.statusKontrak;
-            
             let elSisaKontrak = document.getElementById('lbl-sisa-kontrak');
             elSisaKontrak.innerText = data.sisaHariKontrak;
             if(data.sisaHariKontrak.includes("Habis")) elSisaKontrak.className = "font-bold text-red-600";
 
-            // LOGIKA ROLE: Jika dia HRD atau Atasan, Munculkan Menu Rahasia
-            if(data.isAtasan || data.isHRD) {
-                document.getElementById('menu-approval').classList.remove('hidden');
-            }
-            
-            bukaMenu('Beranda'); // Selalu buka beranda pertama kali
+            if(data.isAtasan || data.isHRD) document.getElementById('btn-menu-Approval').classList.remove('hidden');
+            bukaMenu('Beranda');
         }
 
-        // 3. FUNGSI NAVIGASI MENU (Single Page Application)
+        // --- 3. NAVIGASI MENU (SPA) ---
         function bukaMenu(namaMenu) {
-            document.getElementById('judul-halaman').innerText = namaMenu === "Beranda" ? "Beranda Karyawan" : namaMenu;
+            // Update Title
+            let textJudul = namaMenu;
+            if(namaMenu === 'Beranda') textJudul = 'Beranda Karyawan';
+            if(namaMenu === 'Absensi') textJudul = 'Berita Acara Karyawan';
+            if(namaMenu === 'Approval') textJudul = 'Pusat Persetujuan HRD';
+            document.getElementById('judul-halaman').innerText = textJudul;
             
-            // Sembunyikan semua konten
-            document.getElementById('konten-beranda').classList.add('hidden');
-            document.getElementById('konten-approval').classList.add('hidden');
-            document.getElementById('konten-coming-soon').classList.add('hidden');
+            // Ubah Warna Tombol Menu Sidebar
+            document.querySelectorAll('.menu-btn').forEach(btn => { btn.className = "w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors menu-btn"; });
+            let activeBtn = document.getElementById('btn-menu-' + namaMenu);
+            if(activeBtn) activeBtn.className = "w-full flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium shadow-md transition-colors menu-btn";
 
-            if(namaMenu === 'Beranda') {
-                document.getElementById('konten-beranda').classList.remove('hidden');
-            } else if (namaMenu === 'Approval') {
-                document.getElementById('konten-approval').classList.remove('hidden');
-                tarikDataApproval();
-            } else {
-                document.getElementById('konten-coming-soon').classList.remove('hidden');
-            }
+            // Sembunyikan Semua Konten, Munculkan yang Dipilih
+            ['Beranda', 'Absensi', 'Libur', 'Approval'].forEach(id => { document.getElementById('konten-' + id).classList.add('hidden'); });
+            document.getElementById('konten-' + namaMenu).classList.remove('hidden');
+
+            // Logika Khusus tiap Halaman
+            if(namaMenu === 'Absensi') inisiasiAbsensi();
+            if(namaMenu === 'Libur') inisiasiLibur();
+            if(namaMenu === 'Approval') tarikDataApproval();
         }
 
-        // 4. FUNGSI TARIK DATA APPROVAL (Khusus HRD/Atasan)
-        async function tarikDataApproval() {
-            const nik = sessionStorage.getItem("userNIK");
+        // --- 4. LOGIKA ABSENSI (BERITA ACARA) ---
+        function inisiasiAbsensi() {
+            let n = new Date(); 
+            document.getElementById('absTgl').value = n.getFullYear() + "-" + String(n.getMonth()+1).padStart(2,'0') + "-" + String(n.getDate()).padStart(2,'0');
+            document.getElementById('absJam').value = String(n.getHours()).padStart(2,'0') + ":" + String(n.getMinutes()).padStart(2,'0');
+            const loc = document.getElementById('absLokasi'); loc.value = "Mencari Koordinat GPS...";
+            if (navigator.geolocation) navigator.geolocation.getCurrentPosition(p => loc.value = p.coords.latitude + "," + p.coords.longitude, e => loc.value = "Akses GPS Ditolak / Gagal");
+        }
+
+        const compressImage = f => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = e => { const i = new Image(); i.src = e.target.result; i.onload = () => { let w = i.width, h = i.height; if (w > h && w > 900) { h = Math.round((h * 900)/w); w = 900; } else if (h > 900) { w = Math.round((w * 900)/h); h = 900; } const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(i, 0, 0, w, h); res({ data: c.toDataURL('image/jpeg', 0.6).split(',')[1], mime: 'image/jpeg', name: "BuktiAbsen.jpg" }); }; i.onerror = rej; }; r.onerror = rej; });
+        
+        async function submitAbsensi(e) {
+            e.preventDefault(); const b = document.getElementById('btn-submit-absen'); 
+            if(document.getElementById('absLokasi').value.includes("Gagal") || document.getElementById('absLokasi').value.includes("Mencari")) return alert("Harap tunggu hingga GPS terkunci."); 
+            b.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mengirim Data...'; b.disabled = true; 
+            try { 
+                let f = await compressImage(document.getElementById('absFoto').files[0]);
+                const data = JSON.parse(sessionStorage.getItem("dataKaryawan"));
+                let payload = { action: 'absen', data: { nik: sessionStorage.getItem("userNIK"), nama: data.nama, tanggal: document.getElementById('absTgl').value, jam: document.getElementById('absJam').value, statusAbsen: document.getElementById('absStatus').value, jenisAbsen: document.getElementById('absJenis').value, keterangan: document.getElementById('absKet').value, lokasi: document.getElementById('absLokasi').value, fotoData: f.data, fotoMime: f.mime, fotoName: f.name } };
+                
+                let response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                let result = await response.json();
+                if(result.status === 'SUCCESS'){ alert('Berita Acara Berhasil Dikirim!'); bukaMenu('Beranda'); } else alert(result.message);
+            } catch(err) { alert("Error saat mengirim foto."); }
+            b.innerHTML = "Kirim Berita Acara"; b.disabled = false;
+        }
+
+        // --- 5. LOGIKA PENGAJUAN LIBUR ---
+        function inisiasiLibur() {
+            renderDropdownTM('liburTglTM'); renderDropdownTM('liburTglGanti');
+            cekJenisLibur(); 
             const data = JSON.parse(sessionStorage.getItem("dataKaryawan"));
+            const c = document.getElementById('container-riwayat-libur');
+            if(!data.riwayat || data.riwayat.length === 0) { c.innerHTML = '<p class="text-center text-slate-500 py-4">Belum ada riwayat pengajuan.</p>'; return; }
+            let h = ""; data.riwayat.forEach(i => {
+                let bgBorder = "border-yellow-400"; let textBadge = "bg-yellow-100 text-yellow-700";
+                if(i.statusApprove.includes("Disetujui")) { bgBorder = "border-green-500"; textBadge = "bg-green-100 text-green-700"; } 
+                else if(i.statusApprove.includes("Ditolak")) { bgBorder = "border-red-500"; textBadge = "bg-red-100 text-red-700"; }
+                h += `
+                <div class="p-4 border-l-4 ${bgBorder} bg-slate-50 rounded-r-lg">
+                    <div class="flex justify-between items-start mb-2"><span class="text-xs font-bold text-slate-400">${i.waktuPengajuan}</span><span class="${textBadge} px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">${i.statusApprove}</span></div>
+                    <h4 class="font-bold text-slate-800">${i.jenis}</h4><p class="text-xs text-slate-600 mb-2">Tgl: ${i.tglLibur}</p>
+                    <div class="bg-white p-2 rounded border border-slate-100 text-xs"><div class="mb-1"><span class="font-semibold">Atasan:</span> ${i.catatanAtasan}</div><div><span class="font-semibold">HRD:</span> ${i.catatanHRD}</div></div>
+                </div>`;
+            }); c.innerHTML = h;
+        }
+
+        function renderDropdownTM(elementId) {
+            const selectEl = document.getElementById(elementId); selectEl.innerHTML = '<option value="" selected disabled>Pilih Tanggal Merah...</option>';
+            let today = new Date(); today.setHours(0,0,0,0);
+            globalDaftarTM.forEach(tm => {
+                let tmDate = new Date(tm.tglAsli); tmDate.setHours(0,0,0,0);
+                let opt = document.createElement('option');
+                if(tmDate > today) { opt.disabled = true; opt.style.color = "#999"; opt.text = tm.tglFormat + " - " + tm.nama + " (Belum Lewat)"; } 
+                else { opt.value = tm.tglFormat + " (" + tm.nama + ")"; opt.text = tm.tglFormat + " - " + tm.nama; }
+                selectEl.appendChild(opt);
+            });
+        }
+
+        function cekJenisLibur() { 
+            const jenis = document.getElementById('liburJenis').value;
+            const wBiasa = document.getElementById('wrapTglBiasa'); const wTM = document.getElementById('wrapTglTM'); const wGanti = document.getElementById('wrapTglGantiTM');
+            document.getElementById('liburTglBiasa').required = false; document.getElementById('liburTglTM').required = false;
+            
+            if(jenis === "Libur Tanggal Merah (Hari H)") { wBiasa.classList.add('hidden'); wTM.classList.remove('hidden'); wGanti.classList.add('hidden'); document.getElementById('liburTglTM').required = true; } 
+            else if (jenis === "Pengganti Tanggal Merah (TM)") { wBiasa.classList.remove('hidden'); wTM.classList.add('hidden'); wGanti.classList.remove('hidden'); document.getElementById('liburTglBiasa').required = true; } 
+            else { wBiasa.classList.remove('hidden'); wTM.classList.add('hidden'); wGanti.classList.add('hidden'); document.getElementById('liburTglBiasa').required = true; }
+        }
+
+        async function submitLibur(e) {
+            e.preventDefault(); 
+            const dKar = JSON.parse(sessionStorage.getItem("dataKaryawan"));
+            let sisaTM = parseInt(dKar.sisaTM) || 0; let sisaCuti = parseInt(dKar.sisaCuti) || 0; let jenis = document.getElementById('liburJenis').value;
+            if(jenis.includes("Cuti")) { if(sisaTM > 0) return alert("PENGIRIMAN GAGAL!\nAnda masih memiliki jatah TM. Habiskan TM terlebih dahulu."); if(sisaCuti <= 0) return alert("Jatah Cuti Tahunan habis."); } 
+            else if (jenis.includes("TM")) { if(sisaTM <= 0) return alert("Jatah Libur TM Anda habis."); }
+
+            let nilaiTglLibur = ""; let nilaiGantiTM = "-";
+            if (jenis === "Libur Tanggal Merah (Hari H)") { nilaiTglLibur = document.getElementById('liburTglTM').value; } 
+            else {
+                let d = new Date(document.getElementById('liburTglBiasa').value); let months = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+                nilaiTglLibur = String(d.getDate()).padStart(2, '0') + " " + months[d.getMonth()] + " " + d.getFullYear(); 
+                if(jenis === "Pengganti Tanggal Merah (TM)") nilaiGantiTM = document.getElementById('liburTglGanti').value || "-";
+            }
+
+            const btn = document.getElementById('btn-submit-libur'); btn.innerHTML = "Mengirim..."; btn.disabled = true;
+            try {
+                let payload = { action: 'pengajuan_libur', data: { nik: sessionStorage.getItem("userNIK"), nama: dKar.nama, jenisLibur: jenis, tglLibur: nilaiTglLibur, tglGantiTM: nilaiGantiTM, alasan: document.getElementById('liburAlasan').value } };
+                let response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                let result = await response.json();
+                if(result.status === 'SUCCESS') { 
+                    alert('Pengajuan Berhasil Dikirim! Silakan Logout dan Login kembali besok untuk memperbarui riwayat.'); 
+                    document.getElementById('form-libur').reset(); bukaMenu('Beranda'); 
+                } else alert(result.message);
+            } catch(err) { alert("Error Server"); }
+            btn.innerHTML = "Ajukan Libur"; btn.disabled = false;
+        }
+
+        // --- 6. LOGIKA PUSAT APPROVAL (HRD) ---
+        async function tarikDataApproval() {
             const tbody = document.getElementById('tabel-approval');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Menarik data...</td></tr>';
-            
             try {
-                let response = await fetch(API_URL, {
-                    method: 'POST', body: JSON.stringify({ action: 'get_approval', data: { nik: nik, isHRD: data.isHRD } })
-                });
+                const nik = sessionStorage.getItem("userNIK"); const dKar = JSON.parse(sessionStorage.getItem("dataKaryawan"));
+                let response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_approval', data: { nik: nik, isHRD: dKar.isHRD } }) });
                 let result = await response.json();
-                
                 if(result.status === "SUCCESS") {
-                    let html = '';
-                    let totalPending = 0;
+                    let html = ''; let gabung = [];
+                    if(result.atasan) gabung = gabung.concat(result.atasan.map(x => ({...x, role: 'ATASAN'})));
+                    if(result.hrd) gabung = gabung.concat(result.hrd.map(x => ({...x, role: 'HRD'})));
+                    document.getElementById('angka-pending').innerText = gabung.length;
                     
-                    // Kita gabung data Atasan & HRD (jika dia merangkap)
-                    let gabungData = [];
-                    if(result.atasan) gabungData = gabungData.concat(result.atasan.map(x => ({...x, role: 'ATASAN'})));
-                    if(result.hrd) gabungData = gabungData.concat(result.hrd.map(x => ({...x, role: 'HRD'})));
-                    
-                    totalPending = gabungData.length;
-                    document.getElementById('angka-pending').innerText = totalPending;
-
-                    if(totalPending === 0) {
-                        html = '<tr><td colspan="4" class="text-center py-6 text-green-600 font-bold bg-green-50">Yeay! Tidak ada pengajuan yang tertunda.</td></tr>';
-                    } else {
-                        gabungData.forEach(item => {
-                            let badgeWarna = item.jenis.includes('Cuti') ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700';
+                    if(gabung.length === 0) { html = '<tr><td colspan="4" class="text-center py-6 text-green-600 font-bold bg-green-50">Semua pengajuan sudah diproses!</td></tr>'; } 
+                    else {
+                        gabung.forEach(item => {
+                            let wBadge = item.jenis.includes('Cuti') ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700';
                             html += `
                             <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-                                <td class="px-6 py-4">
-                                    <div class="font-bold text-slate-800">${item.nama}</div>
-                                    <div class="text-xs font-bold text-orange-500 mt-1">Sebagai: ${item.role}</div>
-                                </td>
-                                <td class="px-6 py-4"><span class="${badgeWarna} px-3 py-1 rounded-full text-xs font-bold">${item.jenis}</span></td>
-                                <td class="px-6 py-4 font-medium">${item.tglLibur}</td>
+                                <td class="px-6 py-4"><div class="font-bold text-slate-800">${item.nama}</div><div class="text-[10px] font-bold text-orange-500 uppercase mt-1">Sbg: ${item.role}</div></td>
+                                <td class="px-6 py-4"><span class="${wBadge} px-3 py-1 rounded-full text-xs font-bold">${item.jenis}</span><p class="text-xs text-slate-500 mt-2 line-clamp-1" title="${item.alasan}">${item.alasan}</p></td>
+                                <td class="px-6 py-4 text-sm font-medium">${item.tglLibur} ${item.tglGanti !== "-" ? `<br><span class="text-xs text-orange-500">Ganti TM: ${item.tglGanti}</span>` : ""}</td>
                                 <td class="px-6 py-4 text-center">
-                                    <button onclick="alert('Fitur Proses Approval sedang diuji coba!')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded text-xs font-bold transition border border-blue-200">Tinjau</button>
+                                    <button onclick="prosesApproval(${item.row}, 'Disetujui', '${item.role}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded shadow-sm text-xs font-bold transition mr-1 mb-1"><i class="fa-solid fa-check"></i> ACC</button>
+                                    <button onclick="prosesApproval(${item.row}, 'Ditolak', '${item.role}')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded shadow-sm text-xs font-bold transition"><i class="fa-solid fa-xmark"></i> Tolak</button>
                                 </td>
                             </tr>`;
                         });
-                    }
-                    tbody.innerHTML = html;
+                    } tbody.innerHTML = html;
                 }
-            } catch(e) { tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-red-500 font-bold">Koneksi Terputus.</td></tr>'; }
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-red-500 font-bold">Koneksi API Gagal.</td></tr>'; }
         }
 
-        // 5. LOGOUT
-        function logout() {
-            sessionStorage.clear();
-            location.reload(); // Refresh total untuk menghapus jejak memori
+        async function prosesApproval(row, status, role) {
+            let cat = prompt(`Anda akan ${status} pengajuan ini.\nCatatan (Opsional):`); if (cat === null) return;
+            alert("Memproses ke Google Sheets... Harap tunggu.");
+            try {
+                let response = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'proses_approval', data: { row: row, status: status, catatan: cat, role: role } }) });
+                let result = await response.json();
+                if(result.status === "SUCCESS") { alert(`BERHASIL! Pengajuan telah ${status}.`); tarikDataApproval(); } else alert("Gagal memproses.");
+            } catch(e) { alert("Server error."); }
         }
+
+        // --- 7. LOGOUT ---
+        function logout() { sessionStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
