@@ -3,288 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TI Connect - Dashboard HRIS</title>
-    <!-- Tailwind CSS & FontAwesome -->
+    <title>TI Connect - HRIS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .bg-sidebar { background-color: #0b1c3c; } 
         .bg-main { background-color: #f1f5f9; }
+        /* Animasi Transisi Halus */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-main h-screen flex overflow-hidden text-slate-800">
 
-    <script>
-        // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
-        const API_URL = "https://script.google.com/macros/s/AKfycbwYi5o2DaH-7yi8pNN2Z8T1F7plBVtY4ckx6uTRObQo-OjNdjnXbdiVml0V0a1mEXuW/exec";
-    </script>
-
-    <!-- SIDEBAR (Menu Kiri) -->
-    <aside class="bg-sidebar w-64 h-full flex flex-col text-slate-300 shadow-xl z-20 hidden md:flex">
-        <!-- Logo Area -->
-        <div class="p-6 pb-4 border-b border-slate-700/50">
-            <h1 class="text-2xl font-bold text-white mb-1"><i class="fa-solid fa-crown text-yellow-500 mr-2"></i>TI Connect.</h1>
-            <p class="text-xs text-slate-400">Turen Indah Group</p>
-        </div>
-
-        <!-- Menu Navigation -->
-        <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-            <a href="#" class="flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium shadow-md">
-                <i class="fa-solid fa-border-all w-6"></i> Dashboard
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
-                <i class="fa-solid fa-users w-6"></i> Data Karyawan
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
-                <i class="fa-regular fa-clock w-6"></i> Rekap Absensi
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
-                <i class="fa-regular fa-calendar-alt w-6"></i> Approval Libur
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
-                <i class="fa-solid fa-money-check-dollar w-6"></i> Slip Gaji
-            </a>
-        </div>
-
-        <!-- Admin Profile -->
-        <div class="p-4 border-t border-slate-700/50 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">HR</div>
-            <div>
-                <p class="text-sm font-bold text-white" id="adminName">Admin HRD</p>
-                <p class="text-xs text-slate-400">Turen Indah Group</p>
+    <!-- ========================================== -->
+    <!-- 1. HALAMAN LOGIN -->
+    <!-- ========================================== -->
+    <div id="view-login" class="w-full h-full flex items-center justify-center bg-slate-100 absolute z-50 fade-in">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 mb-4">
+                    <i class="fa-solid fa-crown text-3xl text-yellow-500"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800">TI Connect.</h1>
+                <p class="text-sm text-slate-500">Sistem Informasi Karyawan Turen Indah</p>
             </div>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT (Area Kanan) -->
-    <main class="flex-1 h-full overflow-y-auto">
-        
-        <!-- Header -->
-        <header class="bg-white px-8 py-5 shadow-sm sticky top-0 z-10 flex justify-between items-center">
-            <div>
-                <h2 class="text-2xl font-bold text-slate-800">Dashboard Monitoring</h2>
-                <p class="text-xs text-slate-400">Pusat Kendali Operasional & HRIS</p>
-            </div>
-            <div class="flex items-center gap-4 text-sm font-medium">
-                <button onclick="loadDashboardData()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                    <i class="fa-solid fa-rotate text-blue-600" id="refreshIcon"></i> Sinkronisasi
-                </button>
-                <span id="apiStatus" class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Terhubung ke Sheets</span>
-            </div>
-        </header>
-
-        <!-- Area Konten (Kartu & Tabel) -->
-        <div class="p-8 space-y-8">
             
-            <!-- Baris Kartu KPI Real-time -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Kartu 1 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="text-slate-500 text-sm font-medium"><i class="fa-solid fa-users mr-2 text-blue-500"></i>Karyawan Aktif</div>
-                        <span class="text-slate-400 text-xs">Total Master</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-slate-800" id="kpiKaryawan">-</h3>
-                    <p class="text-xs text-slate-400 mt-2">Sinkron dengan sheet Data Karyawan</p>
+            <form id="form-login" onsubmit="prosesLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-700 mb-1">NIK Karyawan</label>
+                    <input type="text" id="login-nik" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
                 </div>
-
-                <!-- Kartu 2 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="text-slate-500 text-sm font-medium"><i class="fa-regular fa-clock mr-2 text-indigo-500"></i>Absensi Masuk</div>
-                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">Hari Ini</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-slate-800" id="kpiAbsensi">-</h3>
-                    <p class="text-xs text-slate-400 mt-2">Data Absensi terkini</p>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-slate-700 mb-1">PIN</label>
+                    <input type="password" id="login-pin" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
                 </div>
-
-                <!-- Kartu 3 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="text-slate-500 text-sm font-medium"><i class="fa-solid fa-envelope-open-text mr-2 text-amber-500"></i>Menunggu Approval HRD</div>
-                        <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded">Pending</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-amber-600" id="kpiPending">-</h3>
-                    <p class="text-xs text-slate-400 mt-2">Pengajuan libur siap diproses</p>
-                </div>
-            </div>
-
-            <!-- Tabel Antrean Approval Libur -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-base">Pengajuan Libur Menunggu Persetujuan HRD</h3>
-                        <p class="text-xs text-slate-500">Menampilkan pengajuan yang memerlukan tindakan approval</p>
-                    </div>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
-                                <th class="px-6 py-4 font-semibold border-b">Karyawan</th>
-                                <th class="px-6 py-4 font-semibold border-b">Unit Bisnis</th>
-                                <th class="px-6 py-4 font-semibold border-b">Jenis Libur</th>
-                                <th class="px-6 py-4 font-semibold border-b">Tanggal Libur</th>
-                                <th class="px-6 py-4 font-semibold border-b">Alasan</th>
-                                <th class="px-6 py-4 font-semibold border-b text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelLiburBody" class="text-sm divide-y divide-slate-100">
-                            <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-slate-400">
-                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengambil data dari Google Sheets...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Modal Konfirmasi Approval -->
-    <div id="modalApproval" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800">Proses Approval Pengajuan</h3>
-            <div id="modalDetail" class="text-sm text-slate-600 bg-slate-50 p-3 rounded-lg space-y-1"></div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Catatan HRD (Opsional)</label>
-                <textarea id="modalCatatan" rows="2" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tulis catatan jika diperlukan..."></textarea>
-            </div>
-            <div class="flex gap-2 pt-2">
-                <button onclick="submitApproval('Disetujui')" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg text-sm transition">
-                    <i class="fa-solid fa-check mr-1"></i> Setujui
+                <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md">
+                    Masuk ke Sistem
                 </button>
-                <button onclick="submitApproval('Ditolak')" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg text-sm transition">
-                    <i class="fa-solid fa-xmark mr-1"></i> Tolak
-                </button>
-                <button onclick="tutupModal()" class="px-4 py-2 border rounded-lg text-sm text-slate-600 hover:bg-slate-50">Batal</button>
-            </div>
+            </form>
+            <div id="login-error" class="mt-4 text-center text-sm text-red-500 font-bold hidden"></div>
         </div>
     </div>
 
-    <!-- LOGIKA JAVASCRIPT API -->
-    <script>
-        let selectedRow = null;
+    <!-- ========================================== -->
+    <!-- 2. HALAMAN DASHBOARD UTAMA (DISembunyikan dlu) -->
+    <!-- ========================================== -->
+    <div id="view-dashboard" class="w-full h-full flex hidden fade-in">
+        
+        <!-- SIDEBAR -->
+        <aside class="bg-sidebar w-64 h-full flex flex-col text-slate-300 shadow-xl z-20 hidden md:flex">
+            <div class="p-6 pb-4 border-b border-slate-700/50">
+                <h1 class="text-2xl font-bold text-white mb-1"><i class="fa-solid fa-crown text-yellow-500 mr-2"></i>TI Connect.</h1>
+            </div>
+            <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1" id="menu-container">
+                <button onclick="bukaMenu('Beranda')" class="w-full flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium shadow-md">
+                    <i class="fa-solid fa-house w-6 text-left"></i> Beranda
+                </button>
+                <button onclick="bukaMenu('Absensi')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+                    <i class="fa-regular fa-clock w-6 text-left"></i> Absensi GPS
+                </button>
+                <button onclick="bukaMenu('Libur')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+                    <i class="fa-regular fa-calendar-alt w-6 text-left"></i> Pengajuan Libur
+                </button>
+                <!-- Menu Khusus HRD & Atasan (Disembunyikan secara default) -->
+                <button id="menu-approval" onclick="bukaMenu('Approval')" class="w-full flex items-center px-4 py-3 hover:bg-slate-800 text-yellow-400 hover:text-yellow-300 rounded-lg transition-colors hidden">
+                    <i class="fa-solid fa-envelope-open-text w-6 text-left"></i> Pusat Persetujuan
+                </button>
+            </div>
+            <div class="p-4 border-t border-slate-700/50 flex items-center gap-3 justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold"><i class="fa-regular fa-user"></i></div>
+                    <div class="overflow-hidden">
+                        <p id="lbl-nama" class="text-sm font-bold text-white truncate w-32">Nama</p>
+                        <p id="lbl-jabatan" class="text-xs text-slate-400 truncate w-32">Jabatan</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
 
-        async function postAPI(action, data = {}) {
-            const res = await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ action: action, data: data })
-            });
-            return await res.json();
-        }
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 h-full overflow-y-auto relative">
+            <header class="bg-white px-8 py-5 shadow-sm sticky top-0 z-10 flex justify-between items-center">
+                <h2 id="judul-halaman" class="text-2xl font-bold text-slate-800">Beranda Karyawan</h2>
+                <div class="hidden md:flex items-center gap-4 text-sm font-medium">
+                    <span id="status-koneksi" class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-link"></i> API Online</span>
+                </div>
+            </header>
 
-        async function loadDashboardData() {
-            const icon = document.getElementById('refreshIcon');
-            icon.classList.add('fa-spin');
-            
-            try {
-                // Tarik data approval HRD
-                const resApproval = await postAPI("get_approval", { nik: "", isHRD: true });
+            <div class="p-8 w-full max-w-5xl mx-auto">
                 
-                if (resApproval.status === "SUCCESS") {
-                    renderTabelLibur(resApproval.hrd || []);
-                    document.getElementById('kpiPending').innerText = (resApproval.hrd || []).length;
-                }
+                <!-- KONTEN: BERANDA KARYAWAN -->
+                <div id="konten-beranda" class="fade-in">
+                    <!-- Kartu Sisa Libur Pribadi -->
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Informasi Sisa Libur Anda</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-md p-6 text-white relative overflow-hidden">
+                            <i class="fa-solid fa-umbrella-beach absolute -right-4 -bottom-4 text-7xl opacity-20"></i>
+                            <div class="text-blue-100 text-sm font-medium mb-2">Cuti Tahunan</div>
+                            <div class="flex items-end gap-2"><h3 id="lbl-sisa-cuti" class="text-4xl font-bold">0</h3><span class="mb-1 text-blue-100">Hari</span></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-xl shadow-md p-6 text-white relative overflow-hidden">
+                            <i class="fa-solid fa-calendar-check absolute -right-4 -bottom-4 text-7xl opacity-20"></i>
+                            <div class="text-emerald-100 text-sm font-medium mb-2">Sisa Pengganti TM</div>
+                            <div class="flex items-end gap-2"><h3 id="lbl-sisa-tm" class="text-4xl font-bold">0</h3><span class="mb-1 text-emerald-100">Hari</span></div>
+                        </div>
+                    </div>
 
-                // Data indikator dummy untuk statistik (Bisa dihubungkan ke endpoint count)
-                document.getElementById('kpiKaryawan').innerText = "30"; 
-                document.getElementById('kpiAbsensi').innerText = "0";
+                    <!-- Profil Karyawan -->
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Data Profil Karyawan</h3>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Tanggal Masuk</p><p id="lbl-masuk" class="font-bold text-slate-700">-</p></div>
+                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Lama Bekerja</p><p id="lbl-lama" class="font-bold text-blue-600">-</p></div>
+                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Status Kontrak</p><p id="lbl-kontrak" class="font-bold text-slate-700">-</p></div>
+                            <div class="border-b border-slate-100 pb-2"><p class="text-xs text-slate-400 mb-1">Sisa Hari Kontrak</p><p id="lbl-sisa-kontrak" class="font-bold text-slate-700">-</p></div>
+                        </div>
+                    </div>
+                </div>
 
-            } catch (err) {
-                console.error("Gagal memuat data:", err);
-                document.getElementById('tabelLiburBody').innerHTML = `
-                    <tr><td colspan="6" class="px-6 py-6 text-center text-red-500 font-medium">Gagal menghubungkan ke Database. Pastikan URL API sudah terpasang dengan benar.</td></tr>
-                `;
-            } finally {
-                icon.classList.remove('fa-spin');
+                <!-- KONTEN: PUSAT APPROVAL (Hanya HRD/Atasan) -->
+                <div id="konten-approval" class="hidden fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+                            <div class="flex justify-between items-start mb-4"><div class="text-slate-500 text-sm font-medium"><i class="fa-solid fa-envelope-open-text mr-2"></i>Menunggu Approval HRD</div><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">Pending</span></div>
+                            <h3 id="angka-pending" class="text-3xl font-bold text-slate-800">0</h3><p class="text-xs text-slate-400 mt-2">Persetujuan Terakhir</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <div><h3 class="font-bold text-slate-800 text-lg">Daftar Persetujuan Unit</h3></div>
+                            <button onclick="tarikDataApproval()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"><i class="fa-solid fa-rotate-right"></i></button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead><tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider"><th class="px-6 py-4 border-b">Karyawan</th><th class="px-6 py-4 border-b">Jenis Libur</th><th class="px-6 py-4 border-b">Tanggal Libur</th><th class="px-6 py-4 border-b text-center">Aksi</th></tr></thead>
+                                <tbody id="tabel-approval" class="text-sm divide-y divide-slate-100">
+                                    <tr><td colspan="4" class="text-center py-6 text-slate-500">Klik tombol refresh di atas...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konten Fitur Belum Siap (Absensi & Libur) -->
+                <div id="konten-coming-soon" class="hidden fade-in text-center py-20">
+                    <i class="fa-solid fa-person-digging text-6xl text-slate-300 mb-4"></i>
+                    <h2 class="text-2xl font-bold text-slate-700 mb-2">Modul Sedang Dibangun</h2>
+                    <p class="text-slate-500">Fitur ini akan segera tersedia di Vercel.</p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- LOGIKA JAVASCRIPT APLIKASI VERCEL -->
+    <!-- ========================================== -->
+    <script>
+        // WAJIB GANTI DENGAN URL APPS SCRIPT ANDA
+        const API_URL = "https://script.google.com/macros/s/AKfycbwYi5o2DaH-7yi8pNN2Z8T1F7plBVtY4ckx6uTRObQo-OjNdjnXbdiVml0V0a1mEXuW/exec"; 
+
+        // Fungsi yang pertama kali jalan saat web dibuka
+        window.onload = () => {
+            const savedNIK = sessionStorage.getItem("userNIK");
+            if(savedNIK) {
+                // Jika sudah ada sesi login, sembunyikan form login, tampilkan dashboard
+                document.getElementById('view-login').style.display = 'none';
+                document.getElementById('view-dashboard').classList.remove('hidden');
+                pulihkanSesi();
             }
-        }
+        };
 
-        function renderTabelLibur(list) {
-            const tbody = document.getElementById('tabelLiburBody');
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">Tidak ada pengajuan libur yang menunggu persetujuan.</td></tr>`;
-                return;
-            }
-
-            let html = "";
-            list.forEach(item => {
-                const jenisColor = item.jenis.includes('Cuti') ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700';
-                html += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="px-6 py-4 font-bold text-slate-800">${item.nama}</td>
-                        <td class="px-6 py-4 text-slate-600">-</td>
-                        <td class="px-6 py-4"><span class="${jenisColor} px-2.5 py-1 rounded text-xs font-bold">${item.jenis}</span></td>
-                        <td class="px-6 py-4 font-medium text-slate-700">${item.tglLibur}</td>
-                        <td class="px-6 py-4 text-slate-500 text-xs">${item.alasan}</td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="bukaModal(${item.row}, '${item.nama}', '${item.jenis}', '${item.tglLibur}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold px-3 py-1.5 rounded-lg text-xs transition border border-blue-200">
-                                Proses
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        }
-
-        function bukaModal(row, nama, jenis, tgl) {
-            selectedRow = row;
-            document.getElementById('modalDetail').innerHTML = `
-                <p><b>Nama:</b> ${nama}</p>
-                <p><b>Jenis Libur:</b> ${jenis}</p>
-                <p><b>Tanggal:</b> ${tgl}</p>
-            `;
-            document.getElementById('modalCatatan').value = "";
-            const modal = document.getElementById('modalApproval');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function tutupModal() {
-            const modal = document.getElementById('modalApproval');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            selectedRow = null;
-        }
-
-        async function submitApproval(status) {
-            if (!selectedRow) return;
-            const catatan = document.getElementById('modalCatatan').value;
+        // 1. PROSES LOGIN (VERIFIKASI KE GOOGLE SHEETS)
+        async function prosesLogin(e) {
+            e.preventDefault();
+            const nik = document.getElementById('login-nik').value;
+            const pin = document.getElementById('login-pin').value;
+            const btn = document.getElementById('btn-login');
+            const err = document.getElementById('login-error');
             
-            tutupModal();
-            document.getElementById('tabelLiburBody').innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-blue-600 font-medium"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Memperbarui data ke Spreadsheet...</td></tr>`;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...';
+            btn.disabled = true; err.classList.add('hidden');
 
             try {
-                const res = await postAPI("proses_approval", {
-                    row: selectedRow,
-                    status: status,
-                    catatan: catatan,
-                    role: "HRD"
+                let response = await fetch(API_URL, {
+                    method: 'POST', body: JSON.stringify({ action: 'login', data: { nik: nik, pin: pin } })
                 });
+                let result = await response.json();
 
-                if (res.status === "SUCCESS") {
-                    alert(`Pengajuan berhasil di-${status.toLowerCase()}! Jatah libur telah disesuaikan.`);
-                    loadDashboardData();
+                if(result.status === "SUCCESS") {
+                    // Simpan data di Memori Browser (Session Storage)
+                    sessionStorage.setItem("userNIK", nik);
+                    sessionStorage.setItem("dataKaryawan", JSON.stringify(result));
+                    
+                    // Transisi Tampilan
+                    document.getElementById('view-login').style.display = 'none';
+                    document.getElementById('view-dashboard').classList.remove('hidden');
+                    pulihkanSesi(); // Render tampilan berdasarkan role
                 } else {
-                    alert("Gagal memproses pengajuan: " + res.message);
-                    loadDashboardData();
+                    err.innerText = result.message; err.classList.remove('hidden');
                 }
-            } catch (e) {
-                alert("Terjadi kesalahan jaringan: " + e.message);
-                loadDashboardData();
+            } catch (error) {
+                err.innerText = "Gagal terhubung ke Server. Periksa API URL."; err.classList.remove('hidden');
+            }
+            btn.innerHTML = 'Masuk ke Sistem'; btn.disabled = false;
+        }
+
+        // 2. MENGATUR TAMPILAN SESUAI ROLE (KARYAWAN vs HRD)
+        function pulihkanSesi() {
+            const data = JSON.parse(sessionStorage.getItem("dataKaryawan"));
+            if(!data) return logout();
+
+            // Render Profil Singkat
+            document.getElementById('lbl-nama').innerText = data.nama;
+            document.getElementById('lbl-jabatan').innerText = data.jabatan;
+            
+            // Render Dashboard Pribadi
+            document.getElementById('lbl-sisa-cuti').innerText = data.sisaCuti;
+            document.getElementById('lbl-sisa-tm').innerText = data.sisaTM;
+            document.getElementById('lbl-masuk').innerText = data.tglMasuk;
+            document.getElementById('lbl-lama').innerText = data.lamaKerja;
+            document.getElementById('lbl-kontrak').innerText = data.statusKontrak;
+            
+            let elSisaKontrak = document.getElementById('lbl-sisa-kontrak');
+            elSisaKontrak.innerText = data.sisaHariKontrak;
+            if(data.sisaHariKontrak.includes("Habis")) elSisaKontrak.className = "font-bold text-red-600";
+
+            // LOGIKA ROLE: Jika dia HRD atau Atasan, Munculkan Menu Rahasia
+            if(data.isAtasan || data.isHRD) {
+                document.getElementById('menu-approval').classList.remove('hidden');
+            }
+            
+            bukaMenu('Beranda'); // Selalu buka beranda pertama kali
+        }
+
+        // 3. FUNGSI NAVIGASI MENU (Single Page Application)
+        function bukaMenu(namaMenu) {
+            document.getElementById('judul-halaman').innerText = namaMenu === "Beranda" ? "Beranda Karyawan" : namaMenu;
+            
+            // Sembunyikan semua konten
+            document.getElementById('konten-beranda').classList.add('hidden');
+            document.getElementById('konten-approval').classList.add('hidden');
+            document.getElementById('konten-coming-soon').classList.add('hidden');
+
+            if(namaMenu === 'Beranda') {
+                document.getElementById('konten-beranda').classList.remove('hidden');
+            } else if (namaMenu === 'Approval') {
+                document.getElementById('konten-approval').classList.remove('hidden');
+                tarikDataApproval();
+            } else {
+                document.getElementById('konten-coming-soon').classList.remove('hidden');
             }
         }
 
-        // Jalankan saat pertama kali halaman terbuka
-        window.onload = loadDashboardData;
-    </script>
+        // 4. FUNGSI TARIK DATA APPROVAL (Khusus HRD/Atasan)
+        async function tarikDataApproval() {
+            const nik = sessionStorage.getItem("userNIK");
+            const data = JSON.parse(sessionStorage.getItem("dataKaryawan"));
+            const tbody = document.getElementById('tabel-approval');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Menarik data...</td></tr>';
+            
+            try {
+                let response = await fetch(API_URL, {
+                    method: 'POST', body: JSON.stringify({ action: 'get_approval', data: { nik: nik, isHRD: data.isHRD } })
+                });
+                let result = await response.json();
+                
+                if(result.status === "SUCCESS") {
+                    let html = '';
+                    let totalPending = 0;
+                    
+                    // Kita gabung data Atasan & HRD (jika dia merangkap)
+                    let gabungData = [];
+                    if(result.atasan) gabungData = gabungData.concat(result.atasan.map(x => ({...x, role: 'ATASAN'})));
+                    if(result.hrd) gabungData = gabungData.concat(result.hrd.map(x => ({...x, role: 'HRD'})));
+                    
+                    totalPending = gabungData.length;
+                    document.getElementById('angka-pending').innerText = totalPending;
 
+                    if(totalPending === 0) {
+                        html = '<tr><td colspan="4" class="text-center py-6 text-green-600 font-bold bg-green-50">Yeay! Tidak ada pengajuan yang tertunda.</td></tr>';
+                    } else {
+                        gabungData.forEach(item => {
+                            let badgeWarna = item.jenis.includes('Cuti') ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700';
+                            html += `
+                            <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-800">${item.nama}</div>
+                                    <div class="text-xs font-bold text-orange-500 mt-1">Sebagai: ${item.role}</div>
+                                </td>
+                                <td class="px-6 py-4"><span class="${badgeWarna} px-3 py-1 rounded-full text-xs font-bold">${item.jenis}</span></td>
+                                <td class="px-6 py-4 font-medium">${item.tglLibur}</td>
+                                <td class="px-6 py-4 text-center">
+                                    <button onclick="alert('Fitur Proses Approval sedang diuji coba!')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded text-xs font-bold transition border border-blue-200">Tinjau</button>
+                                </td>
+                            </tr>`;
+                        });
+                    }
+                    tbody.innerHTML = html;
+                }
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-red-500 font-bold">Koneksi Terputus.</td></tr>'; }
+        }
+
+        // 5. LOGOUT
+        function logout() {
+            sessionStorage.clear();
+            location.reload(); // Refresh total untuk menghapus jejak memori
+        }
+    </script>
 </body>
 </html>
