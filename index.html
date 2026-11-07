@@ -70,13 +70,11 @@
                 <div class="flex items-start gap-3 w-full">
                     <div class="w-10 h-10 mt-1 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold shrink-0"><i class="fa-regular fa-user"></i></div>
                     
-                    <!-- PERBAIKAN: Unit & Jabatan Ditumpuk dan Tidak Terpotong -->
                     <div class="overflow-hidden w-full">
                         <p id="lbl-nama" class="text-sm font-bold text-white pb-0.5 uppercase tracking-wide">Nama</p>
                         <p id="lbl-unit" class="text-[11px] font-bold text-blue-400 whitespace-normal leading-tight w-full">Unit Bisnis</p>
                         <p id="lbl-jabatan" class="text-[10px] text-slate-400 whitespace-normal leading-tight w-full mt-0.5">Jabatan</p>
                     </div>
-
                 </div>
                 <button onclick="logout()" title="Keluar" class="text-red-400 hover:text-red-300 mt-2 shrink-0"><i class="fa-solid fa-power-off text-lg"></i></button>
             </div>
@@ -199,7 +197,6 @@
                         <div class="w-full md:w-7/12 bg-white rounded-xl shadow-sm border border-slate-100 p-6 self-start">
                             <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Status & Riwayat Libur Anda</h3>
                             <div id="container-riwayat-libur" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-                                <!-- Injeksi dari JS -->
                             </div>
                         </div>
                     </div>
@@ -248,7 +245,6 @@
             }
         };
 
-        // --- 1. PROSES LOGIN ---
         async function prosesLogin(e) {
             e.preventDefault();
             const nik = document.getElementById('login-nik').value; const pin = document.getElementById('login-pin').value;
@@ -269,7 +265,6 @@
             btn.innerHTML = 'Masuk ke Sistem'; btn.disabled = false;
         }
 
-        // --- 2. RENDER PROFIL & ROLE ---
         function pulihkanSesi() {
             const data = JSON.parse(sessionStorage.getItem("dataKaryawan"));
             if(!data) return logout();
@@ -277,8 +272,6 @@
             globalDaftarTM = data.listTanggalMerah || [];
             
             document.getElementById('lbl-nama').innerText = data.nama; 
-            
-            // PERBAIKAN: Unit Bisnis & Jabatan langsung dibaca dari Backend API
             document.getElementById('lbl-unit').innerText = data.unitBisnis || "-";
             document.getElementById('lbl-jabatan').innerText = data.jabatan || "-";
             
@@ -291,23 +284,27 @@
             elSisaKontrak.innerText = data.sisaHariKontrak;
             if(data.sisaHariKontrak.includes("Habis")) elSisaKontrak.className = "font-bold text-red-600";
 
-            if(data.isAtasan || data.isHRD) {
-                document.getElementById('btn-menu-Approval').classList.remove('hidden');
-            } else {
-                document.getElementById('btn-menu-Approval').classList.add('hidden');
+            // LOGIKA MUTLAK HAK AKSES MENU
+            let btnApproval = document.getElementById('btn-menu-Approval');
+            if (btnApproval) {
+                if (data.isAtasan === true || data.isHRD === true) {
+                    btnApproval.classList.remove('hidden');
+                    btnApproval.style.display = 'flex';
+                } else {
+                    btnApproval.classList.add('hidden');
+                    btnApproval.style.display = 'none';
+                }
             }
             
             bukaMenu('Beranda');
         }
 
-        // --- 3. NAVIGASI MENU (SPA) ---
         function bukaMenu(namaMenu) {
-            let textJudul = namaMenu;
-           function bukaMenu(namaMenu) {
             let textJudul = namaMenu;
             if(namaMenu === 'Beranda') textJudul = 'Beranda Karyawan';
             if(namaMenu === 'Absensi') textJudul = 'Berita Acara Karyawan';
             if(namaMenu === 'Approval') textJudul = 'Pusat Persetujuan HRD';
+            if(namaMenu === 'Libur') textJudul = 'Pengajuan Libur';
             document.getElementById('judul-halaman').innerText = textJudul;
             
             document.querySelectorAll('.menu-btn').forEach(btn => { btn.className = "w-full flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors menu-btn"; });
@@ -322,7 +319,6 @@
             if(namaMenu === 'Approval') tarikDataApproval();
         }
 
-        // --- 4. LOGIKA ABSENSI (BERITA ACARA) ---
         function inisiasiAbsensi() {
             let n = new Date(); 
             document.getElementById('absTgl').value = n.getFullYear() + "-" + String(n.getMonth()+1).padStart(2,'0') + "-" + String(n.getDate()).padStart(2,'0');
@@ -349,7 +345,6 @@
             b.innerHTML = "Kirim Berita Acara"; b.disabled = false;
         }
 
-        // --- 5. LOGIKA PENGAJUAN LIBUR ---
         function inisiasiLibur() {
             renderDropdownTM('liburTglTM'); renderDropdownTM('liburTglGanti');
             cekJenisLibur(); 
@@ -419,7 +414,6 @@
             btn.innerHTML = "Ajukan Libur"; btn.disabled = false;
         }
 
-        // --- 6. LOGIKA PUSAT APPROVAL (HRD) ---
         async function tarikDataApproval() {
             const tbody = document.getElementById('tabel-approval');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Menarik data...</td></tr>';
@@ -463,7 +457,6 @@
             } catch(e) { alert("Server error."); }
         }
 
-        // --- 7. LOGOUT ---
         function logout() { sessionStorage.clear(); location.reload(); }
     </script>
 </body>
