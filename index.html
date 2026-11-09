@@ -275,26 +275,70 @@
             document.getElementById('lbl-unit').innerText = data.unitBisnis || "-";
             document.getElementById('lbl-jabatan').innerText = data.jabatan || "-";
             
-            document.getElementById('lbl-sisa-cuti').innerText = data.sisaCuti; document.getElementById('lbl-sisa-tm').innerText = data.sisaTM;
-            document.getElementById('lbl-lahir').innerText = data.tglLahir; document.getElementById('lbl-alamat').innerText = data.alamat;
-            document.getElementById('lbl-masuk').innerText = data.tglMasuk; document.getElementById('lbl-lama').innerText = data.lamaKerja;
+            document.getElementById('lbl-sisa-cuti').innerText = data.sisaCuti; 
+            document.getElementById('lbl-lahir').innerText = data.tglLahir; 
+            document.getElementById('lbl-alamat').innerText = data.alamat;
+            document.getElementById('lbl-masuk').innerText = data.tglMasuk; 
+            document.getElementById('lbl-lama').innerText = data.lamaKerja;
             document.getElementById('lbl-kontrak').innerText = data.statusKontrak;
             
             let elSisaKontrak = document.getElementById('lbl-sisa-kontrak');
             elSisaKontrak.innerText = data.sisaHariKontrak;
             if(data.sisaHariKontrak.includes("Habis")) elSisaKontrak.className = "font-bold text-red-600";
 
-            // LOGIKA MUTLAK HAK AKSES MENU
             let btnApproval = document.getElementById('btn-menu-Approval');
             if (btnApproval) {
                 if (data.isAtasan === true || data.isHRD === true) {
-                    btnApproval.classList.remove('hidden');
-                    btnApproval.style.display = 'flex';
+                    btnApproval.classList.remove('hidden'); btnApproval.style.display = 'flex';
                 } else {
-                    btnApproval.classList.add('hidden');
-                    btnApproval.style.display = 'none';
+                    btnApproval.classList.add('hidden'); btnApproval.style.display = 'none';
                 }
             }
+
+            // =========================================================
+            // KECERDASAN BUATAN: KALKULASI SALDO TM OTOMATIS
+            // =========================================================
+            window.claimedTMs = [];
+            if(data.riwayat) {
+                data.riwayat.forEach(r => {
+                    // Cari TM yang sudah di-ACC atau Menunggu Approval
+                    if(!r.statusApprove.includes("Ditolak") && r.tglLibur.includes("Ganti TM:")) {
+                        let match = r.tglLibur.match(/Ganti TM: (.*?)\)/);
+                        if(match) window.claimedTMs.push(match[1].trim());
+                    }
+                });
+            }
+
+            // Fungsi pembaca tanggal masuk karyawan (Misal: 04 Jan 2026)
+            function parseIndoDate(str) {
+                if(!str || str==="-") return new Date(0);
+                let p = str.split(" "); if(p.length !== 3) return new Date(0);
+                return new Date(p[2], ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"].indexOf(p[1]), parseInt(p[0]));
+            }
+
+            let tglMasukDate = parseIndoDate(data.tglMasuk);
+            let today = new Date(); today.setHours(0,0,0,0);
+            let sisaTMOtomatis = 0;
+
+            globalDaftarTM.forEach(tm => {
+                let tmDate = new Date(tm.tglAsli); tmDate.setHours(0,0,0,0);
+                tm.statusLibur = "";
+
+                if (tmDate > today) {
+                    tm.statusLibur = "Belum Lewat";
+                } else if (tmDate < tglMasukDate) {
+                    tm.statusLibur = "Sebelum Join"; // Terjadi sebelum karyawan masuk
+                } else if (window.claimedTMs.includes(tm.tglFormat)) {
+                    tm.statusLibur = "Sudah Diklaim";
+                } else {
+                    tm.statusLibur = "Tersedia";
+                    sisaTMOtomatis++; // Tambah saldo HANYA jika TM belum diklaim
+                }
+            });
+
+            // Tampilkan angka saldo TM yang 100% akurat di Dashboard
+            document.getElementById('lbl-sisa-tm').innerText = sisaTMOtomatis;
+            // =========================================================
             
             bukaMenu('Beranda');
         }
@@ -365,13 +409,24 @@
         }
 
         function renderDropdownTM(elementId) {
-            const selectEl = document.getElementById(elementId); selectEl.innerHTML = '<option value="" selected disabled>Pilih Tanggal Merah...</option>';
-            let today = new Date(); today.setHours(0,0,0,0);
+            const selectEl = document.getElementById(elementId); 
+            selectEl.innerHTML = '<option value="" selected disabled>Pilih Tanggal Merah...</option>';
+            
             globalDaftarTM.forEach(tm => {
-                let tmDate = new Date(tm.tglAsli); tmDate.setHours(0,0,0,0);
                 let opt = document.createElement('option');
-                if(tmDate > today) { opt.disabled = true; opt.style.color = "#999"; opt.text = tm.tglFormat + " - " + tm.nama + " (Belum Lewat)"; } 
-                else { opt.value = tm.tglFormat + " (" + tm.nama + ")"; opt.text = tm.tglFormat + " - " + tm.nama; }
+                
+                if (tm.statusLibur === "Tersedia") {
+                    opt.value = tm.tglFormat + " (" + tm.nama + ")"; 
+                    opt.text = tm.tglFormat + " - " + tm.nama;
+                } else {
+                    opt.disabled = true;
+                    opt.style.color = "#999";
+                    // Jangan tampilkan TM yang terjadi sebelum dia masuk kerja agar layar tetap bersih
+                    if (tm.statusLibur === "Sebelum Join") return; 
+                    
+                    // Beri label (Sudah Diklaim / Belum Lewat) pada TM yang tidak bisa diklik
+                    opt.text = tm.tglFormat + " - " + tm.nama + " (" + tm.statusLibur + ")";
+                }
                 selectEl.appendChild(opt);
             });
         }
@@ -389,25 +444,37 @@
         async function submitLibur(e) {
             e.preventDefault(); 
             const dKar = JSON.parse(sessionStorage.getItem("dataKaryawan"));
-            let sisaTM = parseInt(dKar.sisaTM) || 0; let sisaCuti = parseInt(dKar.sisaCuti) || 0; let jenis = document.getElementById('liburJenis').value;
-            if(jenis.includes("Cuti")) { if(sisaTM > 0) return alert("PENGIRIMAN GAGAL!\nAnda masih memiliki jatah TM. Habiskan TM terlebih dahulu."); if(sisaCuti <= 0) return alert("Jatah Cuti Tahunan habis."); } 
-            else if (jenis.includes("TM")) { if(sisaTM <= 0) return alert("Jatah Libur TM Anda habis."); }
+            
+            // BACA SISA TM DARI ANGKA LIVE DI DASHBOARD (100% Akurat)
+            let sisaTM = parseInt(document.getElementById('lbl-sisa-tm').innerText) || 0; 
+            let sisaCuti = parseInt(dKar.sisaCuti) || 0; 
+            let jenis = document.getElementById('liburJenis').value;
+            
+            if(jenis.includes("Cuti")) { 
+                if(sisaTM > 0) return alert("PENGIRIMAN GAGAL!\nAnda masih memiliki jatah TM. Habiskan TM terlebih dahulu."); 
+                if(sisaCuti <= 0) return alert("Jatah Cuti Tahunan habis."); 
+            } 
+            else if (jenis.includes("TM")) { 
+                if(sisaTM <= 0) return alert("Jatah Libur TM Anda habis."); 
+            }
 
             let nilaiTglLibur = ""; let nilaiGantiTM = "-";
-            if (jenis === "Libur Tanggal Merah (Hari H)") { nilaiTglLibur = document.getElementById('liburTglTM').value; } 
+            if (jenis === "Libur Tanggal Merah (Hari H)") { 
+                nilaiTglLibur = document.getElementById('liburTglTM').value; 
+            } 
             else {
                 let d = new Date(document.getElementById('liburTglBiasa').value); let months = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
                 nilaiTglLibur = String(d.getDate()).padStart(2, '0') + " " + months[d.getMonth()] + " " + d.getFullYear(); 
                 if(jenis === "Pengganti Tanggal Merah (TM)") nilaiGantiTM = document.getElementById('liburTglGanti').value || "-";
             }
 
-            const btn = document.getElementById('btn-submit-libur'); btn.innerHTML = "Mengirim..."; btn.disabled = true;
+            const btn = document.getElementById('btn-submit-libur'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mengirim...'; btn.disabled = true;
             try {
                 let payload = { action: 'pengajuan_libur', data: { nik: sessionStorage.getItem("userNIK"), nama: dKar.nama, jenisLibur: jenis, tglLibur: nilaiTglLibur, tglGantiTM: nilaiGantiTM, alasan: document.getElementById('liburAlasan').value } };
                 let response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
                 let result = await response.json();
                 if(result.status === 'SUCCESS') { 
-                    alert('Pengajuan Berhasil Dikirim! Silakan Logout dan Login kembali besok untuk memperbarui riwayat.'); 
+                    alert('Pengajuan Berhasil Dikirim! Silakan Logout dan Login kembali untuk merefresh sistem.'); 
                     document.getElementById('form-libur').reset(); bukaMenu('Beranda'); 
                 } else alert(result.message);
             } catch(err) { alert("Error Server"); }
